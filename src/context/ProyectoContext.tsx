@@ -1,6 +1,7 @@
 import {
   useState,
   useCallback,
+  useEffect,
   ReactNode,
 } from 'react'
 import { ClienteAPI } from '../api/cliente'
@@ -18,6 +19,24 @@ interface ProyectoProviderProps {
 export function ProyectoProvider({ children }: ProyectoProviderProps) {
   const [proyectos, setProyectos] = useState<Proyecto[]>([])
   const [proyectoActual, setProyectoActual] = useState<Proyecto | null>(null)
+
+  /**
+   * Sincroniza el proyecto seleccionado cuando cambia la lista de proyectos.
+   * Evita que la UI muestre datos antiguos tras crear/editar tareas o proyectos.
+   */
+  useEffect(() => {
+    if (!proyectoActual) return
+
+    const proyectoActualizado = proyectos.find((p) => p.id === proyectoActual.id) || null
+    if (proyectoActualizado?.id !== proyectoActual.id) {
+      setProyectoActual(null)
+      return
+    }
+
+    if (proyectoActualizado && proyectoActualizado !== proyectoActual) {
+      setProyectoActual(proyectoActualizado)
+    }
+  }, [proyectos, proyectoActual])
 
   /**
    * Carga todos los proyectos desde la API o LocalStorage
