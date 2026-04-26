@@ -13,7 +13,7 @@ interface TarjetaProps {
 export function Tarjeta({ children, className = '', onClick }: TarjetaProps) {
   return (
     <div
-      className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 ${
+      className={`bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow p-6 dark:bg-gray-900 dark:shadow-none dark:border dark:border-gray-800 ${
         onClick ? 'cursor-pointer' : ''
       } ${className}`}
       onClick={onClick}
