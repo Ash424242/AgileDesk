@@ -5,6 +5,10 @@
   "installCommand": "npm install",
   "rewrites": [
     {
+      "source": "/api/proyectos/(.*)",
+      "destination": "/api/proyectos"
+    },
+    {
       "source": "/((?!api|assets|vite\\.svg).*)",
       "destination": "/index.html"
     }
