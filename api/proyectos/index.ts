@@ -56,7 +56,12 @@ function obtenerRuta(req: Solicitud): string[] {
 
   const valor = req.query?.ruta
   if (!valor) return []
-  return Array.isArray(valor) ? valor : [valor]
+
+  if (Array.isArray(valor)) {
+    return valor.flatMap((segmento) => segmento.split('/').filter(Boolean))
+  }
+
+  return valor.split('/').filter(Boolean)
 }
 
 export default function handler(req: Solicitud, res: Respuesta) {
