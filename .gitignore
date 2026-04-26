@@ -1,0 +1,47 @@
+# Instrucciones del proyecto (no se versionan)
+semana 5.md
+
+# Dependencias
+node_modules/
+.npm
+.pnp
+.pnp.js
+
+# Directorios de compilación
+dist/
+build/
+.next/
+out/
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Caché
+.eslintcache
+.stylelintcache
+
+# Testing
+coverage/
+
+# Archivos temporales
+*.tmp
+*.temp
