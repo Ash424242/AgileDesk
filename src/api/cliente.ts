@@ -14,13 +14,18 @@ async function solicitud<T>(
 ): Promise<T> {
   const url = ruta
 
-  const respuesta = await fetch(url, {
-    headers: {
-      'Content-Type': 'application/json',
-      ...opciones.headers,
-    },
-    ...opciones,
-  })
+  let respuesta: Response
+  try {
+    respuesta = await fetch(url, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...opciones.headers,
+      },
+      ...opciones,
+    })
+  } catch {
+    throw new Error('No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.')
+  }
 
   const contenido = await respuesta.text()
   const contenidoTrim = contenido.trim()
@@ -38,7 +43,7 @@ async function solicitud<T>(
   }
 
   if (!respuesta.ok) {
-    let mensaje = `Error: ${respuesta.statusText}`
+    let mensaje = 'Error en la solicitud.'
 
     const payload = parsearContenido()
     if (payload && typeof payload === 'object' && 'mensaje' in payload) {
@@ -47,7 +52,21 @@ async function solicitud<T>(
         mensaje = posibleMensaje
       }
     } else if (typeof payload === 'string' && payload.trim()) {
-      mensaje = payload
+      const texto = payload.trim()
+      const pareceHTML = texto.startsWith('<!doctype') || texto.startsWith('<html')
+      const esNotFoundVercel = texto.includes('NOT_FOUND') || texto.includes('The page could not be found')
+      if (!pareceHTML && !esNotFoundVercel) {
+        mensaje = texto
+      }
+    }
+
+    if (!mensaje || mensaje === 'Error en la solicitud.') {
+      if (respuesta.status === 404) mensaje = 'Recurso no encontrado.'
+      else if (respuesta.status === 400) mensaje = 'La solicitud no es válida.'
+      else if (respuesta.status === 401) mensaje = 'No estás autorizado para realizar esta acción.'
+      else if (respuesta.status === 403) mensaje = 'No tienes permisos para realizar esta acción.'
+      else if (respuesta.status >= 500) mensaje = 'Error interno del servidor. Inténtalo de nuevo más tarde.'
+      else mensaje = `Error al realizar la solicitud (código ${respuesta.status}).`
     }
 
     throw new Error(mensaje)

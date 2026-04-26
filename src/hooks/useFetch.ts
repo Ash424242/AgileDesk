@@ -30,7 +30,7 @@ export function useFetch<T = unknown>(
       const respuesta = await fetch(url, opciones)
 
       if (!respuesta.ok) {
-        throw new Error(`Error en la solicitud: ${respuesta.statusText}`)
+        throw new Error(`No se pudo completar la solicitud (código ${respuesta.status}).`)
       }
 
       const datos = await respuesta.json()
@@ -42,7 +42,7 @@ export function useFetch<T = unknown>(
     } catch (error) {
       setEstado({
         cargando: false,
-        error: error instanceof Error ? error.message : 'Error desconocido',
+        error: error instanceof Error ? error.message : 'Ocurrió un error desconocido.',
         datos: null,
       })
     }
