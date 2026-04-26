@@ -14,8 +14,8 @@ export function Pagina404() {
 
       <div className="text-center">
         <Tarjeta className="py-16">
-          <p className="text-6xl font-bold text-gray-300 mb-4">404</p>
-          <p className="text-gray-600 mb-8">
+          <p className="text-6xl font-bold text-gray-300 dark:text-gray-700 mb-4">404</p>
+          <p className="text-gray-600 dark:text-gray-300 mb-8">
             La página que intentas acceder no está disponible
           </p>
           <Link to="/">

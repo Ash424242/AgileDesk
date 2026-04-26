@@ -74,9 +74,9 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {proyecto.columnas.map((columna) => (
           <div key={columna.id} className="space-y-4">
-            <div className="bg-gray-200 rounded-lg p-4">
-              <h3 className="font-bold text-gray-900">{columna.nombre}</h3>
-              <p className="text-xs text-gray-600 mt-1">{columna.tareas.length} tareas</p>
+            <div className="bg-gray-200 rounded-lg p-4 dark:bg-gray-900 dark:border dark:border-gray-800">
+              <h3 className="font-bold text-gray-900 dark:text-gray-50">{columna.nombre}</h3>
+              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{columna.tareas.length} tareas</p>
             </div>
 
             <div className="space-y-3 min-h-96">
@@ -85,9 +85,9 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
                   key={tarea.id}
                   className="cursor-grab active:cursor-grabbing"
                 >
-                  <h4 className="font-semibold text-gray-900">{tarea.titulo}</h4>
+                  <h4 className="font-semibold text-gray-900 dark:text-gray-50">{tarea.titulo}</h4>
                   {tarea.descripcion && (
-                    <p className="text-sm text-gray-600 mt-2">{tarea.descripcion}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">{tarea.descripcion}</p>
                   )}
                   <div className="flex items-center gap-2 mt-3">
                     <span
@@ -138,7 +138,7 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
             />
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Descripción (opcional)
               </label>
               <textarea
@@ -146,7 +146,7 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
                 value={descripcion}
                 onChange={(e) => setDescripcion(e.target.value)}
                 disabled={cargando}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900 placeholder:text-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
                 rows={3}
               />
             </div>

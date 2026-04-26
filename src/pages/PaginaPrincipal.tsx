@@ -101,7 +101,7 @@ export function PaginaPrincipal() {
 
         <div className="text-center py-16">
           <Tarjeta>
-            <p className="text-gray-600 mb-6">
+            <p className="text-gray-600 dark:text-gray-300 mb-6">
               No tienes proyectos aún. Crea uno para comenzar a organizar
               tus tareas de forma visual.
             </p>
@@ -158,8 +158,8 @@ export function PaginaPrincipal() {
               }`}
               onClick={() => establecerProyectoActual(proyecto.id)}
             >
-              <p className="font-semibold text-gray-900 truncate">{proyecto.nombre}</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="font-semibold text-gray-900 dark:text-gray-50 truncate">{proyecto.nombre}</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                 {proyecto.columnas.length} columnas
               </p>
             </Tarjeta>

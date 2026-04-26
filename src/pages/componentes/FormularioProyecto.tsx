@@ -70,8 +70,8 @@ export function FormularioProyecto({ onSubmit }: FormularioProyectoProps) {
   return (
     <form onSubmit={manejarEnvio} className="space-y-4">
       {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-          <p className="text-red-800 text-sm">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 dark:bg-red-950/30 dark:border-red-900/60">
+          <p className="text-red-800 text-sm dark:text-red-200">{error}</p>
         </div>
       )}
 
@@ -84,7 +84,7 @@ export function FormularioProyecto({ onSubmit }: FormularioProyectoProps) {
       />
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
           Descripción (opcional)
         </label>
         <textarea
@@ -92,7 +92,7 @@ export function FormularioProyecto({ onSubmit }: FormularioProyectoProps) {
           value={descripcion}
           onChange={(e) => setDescripcion(e.target.value)}
           disabled={cargando}
-          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+          className="w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 bg-white text-gray-900 placeholder:text-gray-400 dark:bg-gray-900 dark:text-gray-100 dark:placeholder:text-gray-500"
           rows={3}
         />
       </div>

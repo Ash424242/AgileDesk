@@ -17,11 +17,11 @@ export function Boton({
   className = '',
   ...props
 }: BotonProps) {
-  const estilosBase = 'font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2'
+  const estilosBase = 'font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-950'
 
   const estilosVariante: Record<string, string> = {
     primario: 'bg-primary-500 text-white hover:bg-primary-600 focus:ring-primary-500',
-    secundario: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500',
+    secundario: 'bg-gray-200 text-gray-900 hover:bg-gray-300 focus:ring-gray-500 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700 dark:focus:ring-gray-400',
     peligro: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500',
   }
 
