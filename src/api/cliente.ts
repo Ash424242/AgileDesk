@@ -23,8 +23,19 @@ async function solicitud<T>(
   })
 
   if (!respuesta.ok) {
-    const error = await respuesta.json()
-    throw new Error(error.mensaje || `Error: ${respuesta.statusText}`)
+    let mensaje = `Error: ${respuesta.statusText}`
+
+    try {
+      const error = await respuesta.json()
+      mensaje = error.mensaje || mensaje
+    } catch {
+      const texto = await respuesta.text()
+      if (texto) {
+        mensaje = texto
+      }
+    }
+
+    throw new Error(mensaje)
   }
 
   return respuesta.json()
@@ -105,18 +116,19 @@ export const ClienteAPI = {
   /**
    * Obtiene todas las tareas de una columna
    */
-  async obtenerTareas(columnaId: string): Promise<RespuestaAPI<Tarea[]>> {
-    return solicitud(`/api/columnas/${columnaId}/tareas`)
+  async obtenerTareas(proyectoId: string, columnaId: string): Promise<RespuestaAPI<Tarea[]>> {
+    return solicitud(`/api/proyectos/${proyectoId}/columnas/${columnaId}/tareas`)
   },
 
   /**
    * Crea una nueva tarea en una columna
    */
   async crearTarea(
+    proyectoId: string,
     columnaId: string,
     tarea: Omit<Tarea, 'id' | 'fechaCreacion'>
   ): Promise<RespuestaAPI<Tarea>> {
-    return solicitud(`/api/columnas/${columnaId}/tareas`, {
+    return solicitud(`/api/proyectos/${proyectoId}/columnas/${columnaId}/tareas`, {
       method: 'POST',
       body: JSON.stringify(tarea),
     })
@@ -126,11 +138,12 @@ export const ClienteAPI = {
    * Actualiza una tarea
    */
   async actualizarTarea(
+    proyectoId: string,
     columnaId: string,
     tareaId: string,
     tarea: Partial<Tarea>
   ): Promise<RespuestaAPI<Tarea>> {
-    return solicitud(`/api/columnas/${columnaId}/tareas/${tareaId}`, {
+    return solicitud(`/api/proyectos/${proyectoId}/columnas/${columnaId}/tareas/${tareaId}`, {
       method: 'PUT',
       body: JSON.stringify(tarea),
     })
@@ -139,8 +152,12 @@ export const ClienteAPI = {
   /**
    * Elimina una tarea
    */
-  async eliminarTarea(columnaId: string, tareaId: string): Promise<RespuestaAPI<void>> {
-    return solicitud(`/api/columnas/${columnaId}/tareas/${tareaId}`, {
+  async eliminarTarea(
+    proyectoId: string,
+    columnaId: string,
+    tareaId: string
+  ): Promise<RespuestaAPI<void>> {
+    return solicitud(`/api/proyectos/${proyectoId}/columnas/${columnaId}/tareas/${tareaId}`, {
       method: 'DELETE',
     })
   },
@@ -153,7 +170,7 @@ export const ClienteAPI = {
     columnaBefore: string,
     columnaAfter: string
   ): Promise<RespuestaAPI<Tarea>> {
-    return solicitud(`/api/tareas/${tareaId}/mover`, {
+    return solicitud(`/api/proyectos/tareas/${tareaId}/mover`, {
       method: 'PATCH',
       body: JSON.stringify({ columnaBefore, columnaAfter }),
     })

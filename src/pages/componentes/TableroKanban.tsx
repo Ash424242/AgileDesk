@@ -41,7 +41,7 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
         etiquetas: [],
       }
 
-      await agregarTarea(columnaBandejaAbierta, nuevaTarea)
+      await agregarTarea(proyecto.id, columnaBandejaAbierta, nuevaTarea)
 
       setTitulo('')
       setDescripcion('')
