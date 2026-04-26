@@ -1,4 +1,4 @@
-import { servicioProyectos } from '../../server/src/services/ServicioProyectos'
+import { servicioProyectos } from '../_lib/servicioProyectos.js'
 
 type Solicitud = {
   method?: string
