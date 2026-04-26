@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useProyecto } from '../context/ProyectoContext'
+import { useProyecto } from '../context/useProyecto'
 import { Proyecto } from '../types'
 import {
   Encabezado,

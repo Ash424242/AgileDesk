@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useProyecto } from '../context/ProyectoContext'
+import { useProyecto } from '../context/useProyecto'
 
 /**
  * Componente de navegación principal

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Proyecto, Tarea } from '../../types'
 import { Tarjeta, Boton, Modal, Entrada, Selector, Alerta } from '../../components'
-import { useProyecto } from '../../context/ProyectoContext'
+import { useProyecto } from '../../context/useProyecto'
 
 interface TableroKanbanProps {
   proyecto: Proyecto;

@@ -49,7 +49,7 @@ aplicacion.use(express.static(directorioDistFrontend, {
 /**
  * Manejo de errores global
  */
-aplicacion.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+aplicacion.use((err: Error, req: Request, res: Response) => {
   console.error(err)
   res.status(500).json({
     exito: false,

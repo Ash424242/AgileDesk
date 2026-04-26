@@ -22,23 +22,38 @@ async function solicitud<T>(
     ...opciones,
   })
 
+  const contenido = await respuesta.text()
+  const contenidoTrim = contenido.trim()
+  const contenidoPareceJSON =
+    contenidoTrim.startsWith('{') || contenidoTrim.startsWith('[')
+
+  const parsearContenido = () => {
+    if (!contenidoTrim) return undefined
+    if (!contenidoPareceJSON) return contenido
+    try {
+      return JSON.parse(contenido) as unknown
+    } catch {
+      return contenido
+    }
+  }
+
   if (!respuesta.ok) {
     let mensaje = `Error: ${respuesta.statusText}`
 
-    try {
-      const error = await respuesta.json()
-      mensaje = error.mensaje || mensaje
-    } catch {
-      const texto = await respuesta.text()
-      if (texto) {
-        mensaje = texto
+    const payload = parsearContenido()
+    if (payload && typeof payload === 'object' && 'mensaje' in payload) {
+      const posibleMensaje = (payload as { mensaje?: unknown }).mensaje
+      if (typeof posibleMensaje === 'string' && posibleMensaje.trim()) {
+        mensaje = posibleMensaje
       }
+    } else if (typeof payload === 'string' && payload.trim()) {
+      mensaje = payload
     }
 
     throw new Error(mensaje)
   }
 
-  return respuesta.json()
+  return parsearContenido() as T
 }
 
 /**

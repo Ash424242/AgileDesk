@@ -1,31 +1,11 @@
 import {
-  createContext,
-  useContext,
   useState,
   useCallback,
   ReactNode,
 } from 'react'
 import { ClienteAPI } from '../api/cliente'
 import { Proyecto, Tarea } from '../types'
-
-/**
- * Contexto para la gestión global de proyectos
- */
-interface InfrastructuraProyecto {
-  proyectos: Proyecto[];
-  proyectoActual: Proyecto | null;
-  cargarProyectos: () => Promise<void>;
-  crearProyecto: (proyecto: Omit<Proyecto, 'id' | 'fechaCreacion' | 'fechaModificacion'>) => Promise<void>;
-  actualizarProyecto: (id: string, proyecto: Partial<Proyecto>) => Promise<void>;
-  eliminarProyecto: (id: string) => Promise<void>;
-  establecerProyectoActual: (id: string | null) => void;
-  agregarTarea: (proyectoId: string, columnId: string, tarea: Omit<Tarea, 'id' | 'fechaCreacion'>) => Promise<void>;
-  actualizarTarea: (proyectoId: string, columnId: string, tareaId: string, tarea: Partial<Tarea>) => Promise<void>;
-  eliminarTarea: (proyectoId: string, columnId: string, tareaId: string) => Promise<void>;
-  moverTarea: (tareaId: string, columnaBefore: string, columnaAfter: string) => Promise<void>;
-}
-
-const ProyectoContext = createContext<InfrastructuraProyecto | undefined>(undefined)
+import { ProyectoContext } from './ProyectoContextBase'
 
 interface ProyectoProviderProps {
   children: ReactNode;
@@ -207,15 +187,4 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
       {children}
     </ProyectoContext.Provider>
   )
-}
-
-/**
- * Hook para acceder al contexto de proyectos
- */
-export function useProyecto(): InfrastructuraProyecto {
-  const contexto = useContext(ProyectoContext)
-  if (!contexto) {
-    throw new Error('useProyecto debe usarse dentro de ProyectoProvider')
-  }
-  return contexto
 }
