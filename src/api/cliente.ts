@@ -5,8 +5,6 @@ import { RespuestaAPI, Proyecto, Columna, Tarea } from '../types'
  * Todas las respuestas están tipadas según las interfaces definidas
  */
 
-const URL_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
-
 /**
  * Realiza una solicitud fetch con manejo de errores y tipado
  */
@@ -14,7 +12,7 @@ async function solicitud<T>(
   ruta: string,
   opciones: RequestInit = {}
 ): Promise<T> {
-  const url = `${URL_BASE}${ruta}`
+  const url = ruta
 
   const respuesta = await fetch(url, {
     headers: {

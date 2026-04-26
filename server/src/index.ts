@@ -1,16 +1,19 @@
 import express, { Express, Request, Response, NextFunction } from 'express'
 import cors from 'cors'
-import routerProyectos from './routes/proyectos'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import routerProyectos from './routes/proyectos.js'
 
 const aplicacion: Express = express()
 const PUERTO = process.env.PUERTO || 3000
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 /**
  * Middleware de configuración global
  */
 aplicacion.use(express.json())
 aplicacion.use(cors({
-  origin: process.env.ORIGEN_PERMITIDO || 'http://localhost:5173',
   credentials: true,
 }))
 
@@ -35,6 +38,15 @@ aplicacion.get('/ping', (req: Request, res: Response) => {
 })
 
 /**
+ * Servir archivos estáticos del frontend
+ */
+const directorioDistFrontend = path.join(__dirname, '../../dist')
+aplicacion.use(express.static(directorioDistFrontend, {
+  maxAge: '1d',
+  etag: false,
+}))
+
+/**
  * Manejo de errores global
  */
 aplicacion.use((err: Error, req: Request, res: Response, next: NextFunction) => {
@@ -47,14 +59,10 @@ aplicacion.use((err: Error, req: Request, res: Response, next: NextFunction) => 
 })
 
 /**
- * Ruta no encontrada
+ * Servir index.html para rutas de SPA no encontradas (para React Router)
  */
-aplicacion.use((req: Request, res: Response) => {
-  res.status(404).json({
-    exito: false,
-    mensaje: 'Ruta no encontrada',
-    codigo: 404,
-  })
+aplicacion.get('*', (req: Request, res: Response) => {
+  res.sendFile(path.join(directorioDistFrontend, 'index.html'))
 })
 
 /**

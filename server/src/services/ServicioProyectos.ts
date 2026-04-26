@@ -1,4 +1,4 @@
-import { Proyecto, Columna, Tarea } from '../../src/types'
+import { Proyecto, Columna, Tarea } from '../types'
 
 /**
  * Servicio para gestionar proyectos
@@ -71,7 +71,7 @@ export class ServicioProyectos {
    */
   agregarTarea(columnaId: string, tarea: Omit<Tarea, 'id' | 'fechaCreacion'>): Tarea | null {
     for (const proyecto of this.proyectos.values()) {
-      const columna = proyecto.columnas.find((c) => c.id === columnaId)
+      const columna = proyecto.columnas.find((c: Columna) => c.id === columnaId)
       if (columna) {
         this.contadores.tareas++
         const nuevaTarea: Tarea = {
@@ -96,9 +96,9 @@ export class ServicioProyectos {
     datosActualizacion: Partial<Tarea>
   ): Tarea | null {
     for (const proyecto of this.proyectos.values()) {
-      const columna = proyecto.columnas.find((c) => c.id === columnaId)
+      const columna = proyecto.columnas.find((c: Columna) => c.id === columnaId)
       if (columna) {
-        const tareaIndex = columna.tareas.findIndex((t) => t.id === tareaId)
+        const tareaIndex = columna.tareas.findIndex((t: Tarea) => t.id === tareaId)
         if (tareaIndex !== -1) {
           columna.tareas[tareaIndex] = {
             ...columna.tareas[tareaIndex],
@@ -117,9 +117,9 @@ export class ServicioProyectos {
    */
   eliminarTarea(columnaId: string, tareaId: string): boolean {
     for (const proyecto of this.proyectos.values()) {
-      const columna = proyecto.columnas.find((c) => c.id === columnaId)
+      const columna = proyecto.columnas.find((c: Columna) => c.id === columnaId)
       if (columna) {
-        const indiceTarea = columna.tareas.findIndex((t) => t.id === tareaId)
+        const indiceTarea = columna.tareas.findIndex((t: Tarea) => t.id === tareaId)
         if (indiceTarea !== -1) {
           columna.tareas.splice(indiceTarea, 1)
           proyecto.fechaModificacion = new Date()
@@ -138,9 +138,9 @@ export class ServicioProyectos {
 
     // Busca la tarea en la columna origen
     for (const proyecto of this.proyectos.values()) {
-      const columnaOrigen = proyecto.columnas.find((c) => c.id === columnaOrigenId)
+      const columnaOrigen = proyecto.columnas.find((c: Columna) => c.id === columnaOrigenId)
       if (columnaOrigen) {
-        const indiceTarea = columnaOrigen.tareas.findIndex((t) => t.id === tareaId)
+        const indiceTarea = columnaOrigen.tareas.findIndex((t: Tarea) => t.id === tareaId)
         if (indiceTarea !== -1) {
           [tarea] = columnaOrigen.tareas.splice(indiceTarea, 1)
           break
@@ -152,7 +152,7 @@ export class ServicioProyectos {
 
     // Agrega la tarea a la columna destino
     for (const proyecto of this.proyectos.values()) {
-      const columnaDestino = proyecto.columnas.find((c) => c.id === columnaDestinoId)
+      const columnaDestino = proyecto.columnas.find((c: Columna) => c.id === columnaDestinoId)
       if (columnaDestino) {
         columnaDestino.tareas.push(tarea)
         proyecto.fechaModificacion = new Date()

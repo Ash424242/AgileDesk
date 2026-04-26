@@ -2,7 +2,7 @@
 
 # AgileDesk
 
-Aplicación web de gestión de proyectos tipo Kanban construida con React, TypeScript y Express.
+Aplicación web integral de gestión de proyectos tipo Kanban construida con React, TypeScript y Express. Frontend y backend integrados en una única aplicación.
 
 ## 🎯 Características
 
@@ -14,36 +14,33 @@ Aplicación web de gestión de proyectos tipo Kanban construida con React, TypeS
 - **React Router**: Navegación fluida entre páginas
 - **Context API**: Gestión centralizada de estado global
 - **Hooks Personalizados**: `useFetch` y `useFormulario` para lógica reutilizable
+- **Aplicación Unificada**: Frontend y backend en la misma URL, sin configuración adicional
 
-## 🏃 Ejecución
+## 🚀 Inicio Rápido
 
 ### Desarrollo
 
 Ejecutar frontend y backend simultáneamente:
 
 ```bash
-# Terminal 1: Frontend (Vite)
 npm run dev
-
-# Terminal 2: Backend (Express)
-npm run server:dev
 ```
 
-- Frontend: http://localhost:5173
-- Backend: http://localhost:3000
+- Acceder en: http://localhost:5173
+
+El servidor backend se ejecuta automáticamente en el puerto 3000 y sirve los archivos del frontend.
 
 ### Producción
 
 ```bash
-# Compilar
+# Compilar frontend y backend
 npm run build
 
-# Previsualizar build
-npm run preview
-
-# Servidor de producción
+# Ejecutar servidor de producción
 npm run server
 ```
+
+El servidor servirá la aplicación completa en http://localhost:3000
 
 ## 📂 Estructura del Proyecto
 
@@ -152,35 +149,40 @@ npx tsc --noEmit
 
 ## 🚢 Despliegue
 
-Ver [docs/deployment.md](docs/deployment.md) para instrucciones completas de despliegue.
+La aplicación está completamente integrada: frontend y backend se sirven desde el mismo servidor.
 
-### Resumen Rápido
+### Despliegue en Vercel
 
-1. **Desplegar Backend primero** (Railway, Render o Fly.io)
-   - Obtén la URL pública (ej: `https://agiledesk-api.railway.app`)
+1. **Conectar repositorio GitHub**
+   - Ve a [vercel.com](https://vercel.com)
+   - Conecta tu repositorio de AgileDesk
+   - Vercel detectará automáticamente que es un proyecto Node.js
 
-2. **Desplegar Frontend** (Vercel o Netlify)
-   - Conecta tu repositorio GitHub
-   - Configura variable de entorno en Vercel:
-     ```
-     VITE_API_URL=https://tu-backend-url.com
-     ```
-   - Vercel distribuirá automáticamente
+2. **Configuración automática**
+   - Vercel ejecutará `npm run build` para compilar
+   - Ejecutará `npm start` para iniciar el servidor con los archivos estáticos
 
-3. **Verificar la integración**
-   - El frontend debe poder comunicarse con el backend
-   - Si falla, revisa que `VITE_API_URL` está correctamente configurado
+3. **Sin variables de entorno necesarias**
+   - La aplicación funciona "out of the box"
+   - No necesita configurar `VITE_API_URL`
 
-### Frontend (Vercel)
+4. **Acceder a la aplicación**
+   - Tu aplicación estará disponible en `https://tu-proyecto.vercel.app`
+   - Todos los endpoints estarán disponibles (frontend + API)
+
+### Despliegue local
+
 ```bash
-# Push a main en GitHub
-git push origin main
-# Vercel redeploya automáticamente
+# Compilar
+npm run build
+
+# Ejecutar
+npm run server
+
+# Acceder en http://localhost:3000
 ```
 
-### Backend (Railway/Render)
-```bash
-# Push a main en GitHub
+Ver [docs/deployment.md](docs/deployment.md) para configuraciones avanzadas.
 git push origin main
 # Railway/Render redeploya automáticamente
 ```

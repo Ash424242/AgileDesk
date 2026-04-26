@@ -6,28 +6,28 @@ El cliente HTTP (`src/api/cliente.ts`) proporciona una interfaz tipada para comu
 
 - **Type Safety**: Todo tipado con TypeScript
 - **Gestión de Errores**: Manejo consistente de errores
-- **Configuración Centralizada**: Un único lugar para la URL base
+- **Rutas Relativas**: Se comunica con la API en la misma URL
 - **Reutilización**: Funciones confiables para todas las operaciones
 
 ## Configuración Base
 
+El cliente usa rutas relativas directamente:
+
 ```typescript
-const URL_BASE = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+async function solicitud<T>(
+  ruta: string,
+  opciones: RequestInit = {}
+): Promise<T> {
+  const url = ruta  // Ruta relativa: /api/proyectos
+  // ...
+}
 ```
 
-### Variables de Entorno
+### Por qué rutas relativas
 
-Crear archivo `.env.local`:
-
-```
-VITE_API_URL=http://localhost:3000
-```
-
-Para producción, en variables de GitHub Actions o del proveedor de hosting:
-
-```
-VITE_API_URL=https://agiledesk-api.railway.app
-```
+- **Desarrollo**: Vite proxy automáticamente `/api/*` al servidor backend
+- **Producción**: Express sirve el frontend compilado + API desde la misma URL
+- **Sin configuración**: No requiere variables de entorno
 
 ## Función Base: solicitud()
 
@@ -39,9 +39,9 @@ async function solicitud<T>(
 ```
 
 Proporciona:
-- Headers automáticos
-- Manejo centralizador de errores
-- Consistencia en las respuestas
+- Headers automáticos (`Content-Type: application/json`)
+- Manejo centralizado de errores
+- Consistencia en las respuestas tipadas
 
 ### Ejemplo de uso interno:
 

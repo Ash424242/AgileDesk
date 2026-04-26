@@ -1,6 +1,6 @@
 import { Request, Response } from 'express'
-import { servicioProyectos } from '../services/ServicioProyectos'
-import { Proyecto } from '../../src/types'
+import { servicioProyectos } from '../services/ServicioProyectos.js'
+import { Proyecto } from '../types'
 
 /**
  * Controlador de proyectos
