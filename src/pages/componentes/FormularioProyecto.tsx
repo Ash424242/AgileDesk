@@ -4,14 +4,20 @@ import { Entrada, Boton } from '../../components'
 
 interface FormularioProyectoProps {
   onSubmit: (proyecto: Omit<Proyecto, 'id' | 'fechaCreacion' | 'fechaModificacion'>) => Promise<void>;
+  valoresIniciales?: {
+    nombre?: string;
+    descripcion?: string;
+    columnas?: Columna[];
+  };
+  textoBoton?: string;
 }
 
 /**
  * Formulario para crear un nuevo proyecto
  */
-export function FormularioProyecto({ onSubmit }: FormularioProyectoProps) {
-  const [nombre, setNombre] = useState('')
-  const [descripcion, setDescripcion] = useState('')
+export function FormularioProyecto({ onSubmit, valoresIniciales, textoBoton }: FormularioProyectoProps) {
+  const [nombre, setNombre] = useState(valoresIniciales?.nombre || '')
+  const [descripcion, setDescripcion] = useState(valoresIniciales?.descripcion || '')
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -29,37 +35,21 @@ export function FormularioProyecto({ onSubmit }: FormularioProyectoProps) {
       }
 
       const columnasDefault: Columna[] = [
-        {
-          id: '1',
-          nombre: 'Por Hacer',
-          descripcion: 'Tareas pendientes',
-          posicion: 1,
-          tareas: [],
-        },
-        {
-          id: '2',
-          nombre: 'En Progreso',
-          descripcion: 'Tareas en desarrollo',
-          posicion: 2,
-          tareas: [],
-        },
-        {
-          id: '3',
-          nombre: 'Completado',
-          descripcion: 'Tareas terminadas',
-          posicion: 3,
-          tareas: [],
-        },
+        { id: '1', nombre: 'Por Hacer', descripcion: 'Tareas pendientes', posicion: 1, tareas: [] },
+        { id: '2', nombre: 'En Progreso', descripcion: 'Tareas en desarrollo', posicion: 2, tareas: [] },
+        { id: '3', nombre: 'Completado', descripcion: 'Tareas terminadas', posicion: 3, tareas: [] },
       ]
 
       await onSubmit({
         nombre: nombre.trim(),
         descripcion: descripcion.trim(),
-        columnas: columnasDefault,
+        columnas: valoresIniciales?.columnas || columnasDefault,
       })
 
-      setNombre('')
-      setDescripcion('')
+      if (!valoresIniciales) {
+        setNombre('')
+        setDescripcion('')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al crear proyecto')
     } finally {
@@ -98,7 +88,7 @@ export function FormularioProyecto({ onSubmit }: FormularioProyectoProps) {
       </div>
 
       <Boton type="submit" disabled={cargando} className="w-full">
-        {cargando ? 'Creando...' : 'Crear Proyecto'}
+        {cargando ? 'Guardando...' : (textoBoton || 'Crear Proyecto')}
       </Boton>
     </form>
   )

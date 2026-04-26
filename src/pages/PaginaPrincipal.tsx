@@ -24,11 +24,14 @@ export function PaginaPrincipal() {
     cargarProyectos,
     establecerProyectoActual,
     crearProyecto,
+    actualizarProyecto,
+    eliminarProyecto,
   } = useProyecto()
 
   const [cargando, setCargando] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [modalNuevoAbierto, setModalNuevoAbierto] = useState(false)
+  const [modalEditarAbierto, setModalEditarAbierto] = useState(false)
 
   /**
    * Carga los proyectos al montar el componente
@@ -67,6 +70,35 @@ export function PaginaPrincipal() {
       setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al crear proyecto')
+    }
+  }
+
+  const manejarEditarProyecto = async (datos: Omit<Proyecto, 'id' | 'fechaCreacion' | 'fechaModificacion'>) => {
+    if (!proyectoActual) return
+    try {
+      await actualizarProyecto(proyectoActual.id, {
+        nombre: datos.nombre,
+        descripcion: datos.descripcion,
+      })
+      setModalEditarAbierto(false)
+      setError(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al actualizar proyecto')
+    }
+  }
+
+  const manejarBorrarProyecto = async () => {
+    if (!proyectoActual) return
+    const confirmado = window.confirm(`¿Seguro que quieres borrar el proyecto "${proyectoActual.nombre}"? Esta acción no se puede deshacer.`)
+    if (!confirmado) return
+
+    try {
+      await eliminarProyecto(proyectoActual.id)
+      setModalEditarAbierto(false)
+      setError(null)
+      establecerProyectoActual(null)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Error al borrar proyecto')
     }
   }
 
@@ -129,6 +161,24 @@ export function PaginaPrincipal() {
         subtitulo={proyectoActual?.descripcion || 'Gestiona tus proyectos de forma visual'}
         acciones={
           <div className="flex gap-2">
+            {proyectoActual && (
+              <>
+                <Boton
+                  variante="secundario"
+                  tamaño="pequeño"
+                  onClick={() => setModalEditarAbierto(true)}
+                >
+                  Editar
+                </Boton>
+                <Boton
+                  variante="peligro"
+                  tamaño="pequeño"
+                  onClick={manejarBorrarProyecto}
+                >
+                  Borrar
+                </Boton>
+              </>
+            )}
             <Boton
               variante="secundario"
               tamaño="pequeño"
@@ -178,6 +228,24 @@ export function PaginaPrincipal() {
       >
         <FormularioProyecto onSubmit={manejarCrearProyecto} />
       </Modal>
+
+      {proyectoActual && (
+        <Modal
+          titulo="Editar Proyecto"
+          abierto={modalEditarAbierto}
+          onCerrar={() => setModalEditarAbierto(false)}
+        >
+          <FormularioProyecto
+            onSubmit={manejarEditarProyecto}
+            valoresIniciales={{
+              nombre: proyectoActual.nombre,
+              descripcion: proyectoActual.descripcion,
+              columnas: proyectoActual.columnas,
+            }}
+            textoBoton="Guardar Cambios"
+          />
+        </Modal>
+      )}
     </div>
   )
 }
