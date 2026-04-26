@@ -8,6 +8,11 @@ import {
 import { Proyecto, Tarea } from '../types'
 
 /**
+ * URL base de la API - usa variable de entorno o localhost por defecto
+ */
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+
+/**
  * Contexto para la gestión global de proyectos
  */
 interface InfrastructuraProyecto {
@@ -44,8 +49,11 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
   const cargarProyectos = useCallback(async () => {
     try {
       // Intenta cargar desde la API
-      const respuesta = await fetch('/api/proyectos')
-      if (!respuesta.ok) throw new Error('Error al cargar proyectos')
+      const respuesta = await fetch(`${API_URL}/api/proyectos`)
+      if (!respuesta.ok) {
+        const error = await respuesta.text()
+        throw new Error(`Servidor respondió con error ${respuesta.status}: ${error || respuesta.statusText}`)
+      }
 
       const datos = await respuesta.json()
       setProyectos(datos.datos || [])
@@ -55,6 +63,9 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
       const proyectosGuardados = localStorage.getItem('proyectos')
       if (proyectosGuardados) {
         setProyectos(JSON.parse(proyectosGuardados))
+      } else if (error instanceof Error && error.message.includes('TypeError')) {
+        // Error de conexión
+        throw new Error('No se pudo conectar al servidor. Verifica que el backend esté desplegado y VITE_API_URL esté configurado correctamente.')
       }
     }
   }, [])
@@ -64,19 +75,25 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
    */
   const crearProyecto = useCallback(async (proyecto: Omit<Proyecto, 'id' | 'fechaCreacion' | 'fechaModificacion'>) => {
     try {
-      const respuesta = await fetch('/api/proyectos', {
+      const respuesta = await fetch(`${API_URL}/api/proyectos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(proyecto),
       })
 
-      if (!respuesta.ok) throw new Error('Error al crear proyecto')
+      if (!respuesta.ok) {
+        const error = await respuesta.text()
+        throw new Error(`Error ${respuesta.status}: ${error || respuesta.statusText}`)
+      }
 
       const nuevoProyecto = await respuesta.json()
       setProyectos((previos) => [...previos, nuevoProyecto.datos])
       localStorage.setItem('proyectos', JSON.stringify([...proyectos, nuevoProyecto.datos]))
     } catch (error) {
       console.error('Error al crear proyecto:', error)
+      if (error instanceof TypeError) {
+        throw new Error('No se pudo conectar al servidor. Verifica que el backend esté desplegado. VITE_API_URL debe estar configurado en Vercel.')
+      }
       throw error
     }
   }, [proyectos])
@@ -86,7 +103,7 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
    */
   const actualizarProyecto = useCallback(async (id: string, proyecto: Partial<Proyecto>) => {
     try {
-      const respuesta = await fetch(`/api/proyectos/${id}`, {
+      const respuesta = await fetch(`${API_URL}/api/proyectos/${id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(proyecto),
@@ -112,7 +129,7 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
    */
   const eliminarProyecto = useCallback(async (id: string) => {
     try {
-      const respuesta = await fetch(`/api/proyectos/${id}`, {
+      const respuesta = await fetch(`${API_URL}/api/proyectos/${id}`, {
         method: 'DELETE',
       })
 
@@ -146,7 +163,7 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
    */
   const agregarTarea = useCallback(async (columnId: string, tarea: Omit<Tarea, 'id' | 'fechaCreacion'>) => {
     try {
-      const respuesta = await fetch(`/api/columnas/${columnId}/tareas`, {
+      const respuesta = await fetch(`${API_URL}/api/columnas/${columnId}/tareas`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tarea),
@@ -166,7 +183,7 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
    */
   const actualizarTarea = useCallback(async (columnId: string, tareaId: string, tarea: Partial<Tarea>) => {
     try {
-      const respuesta = await fetch(`/api/columnas/${columnId}/tareas/${tareaId}`, {
+      const respuesta = await fetch(`${API_URL}/api/columnas/${columnId}/tareas/${tareaId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(tarea),
@@ -186,7 +203,7 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
    */
   const eliminarTarea = useCallback(async (columnId: string, tareaId: string) => {
     try {
-      const respuesta = await fetch(`/api/columnas/${columnId}/tareas/${tareaId}`, {
+      const respuesta = await fetch(`${API_URL}/api/columnas/${columnId}/tareas/${tareaId}`, {
         method: 'DELETE',
       })
 
@@ -204,7 +221,7 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
    */
   const moverTarea = useCallback(async (tareaId: string, columnaBefore: string, columnaAfter: string) => {
     try {
-      const respuesta = await fetch(`/api/tareas/${tareaId}/mover`, {
+      const respuesta = await fetch(`${API_URL}/api/tareas/${tareaId}/mover`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ columnaBefore, columnaAfter }),

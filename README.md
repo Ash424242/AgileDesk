@@ -152,14 +152,51 @@ npx tsc --noEmit
 
 ## 🚢 Despliegue
 
+Ver [docs/deployment.md](docs/deployment.md) para instrucciones completas de despliegue.
+
+### Resumen Rápido
+
+1. **Desplegar Backend primero** (Railway, Render o Fly.io)
+   - Obtén la URL pública (ej: `https://agiledesk-api.railway.app`)
+
+2. **Desplegar Frontend** (Vercel o Netlify)
+   - Conecta tu repositorio GitHub
+   - Configura variable de entorno en Vercel:
+     ```
+     VITE_API_URL=https://tu-backend-url.com
+     ```
+   - Vercel distribuirá automáticamente
+
+3. **Verificar la integración**
+   - El frontend debe poder comunicarse con el backend
+   - Si falla, revisa que `VITE_API_URL` está correctamente configurado
+
 ### Frontend (Vercel)
 ```bash
-npm run build
-vercel deploy
+# Push a main en GitHub
+git push origin main
+# Vercel redeploya automáticamente
 ```
 
 ### Backend (Railway/Render)
 ```bash
-git push
-# El deployment se ejecuta automáticamente
+# Push a main en GitHub
+git push origin main
+# Railway/Render redeploya automáticamente
 ```
+
+## ⚙️ Configuración de Variables de Entorno
+
+### Desarrollo Local
+Crea `.env.local` (no se versionará):
+```
+VITE_API_URL=http://localhost:3000
+```
+
+### Producción (Vercel)
+En el dashboard de Vercel, agrega:
+```
+VITE_API_URL=https://tu-backend-desplegado.com
+```
+
+Ver `.env.example` para más variables disponibles.
