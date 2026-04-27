@@ -39,7 +39,8 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
   }, [proyectos, proyectoActual])
 
   /**
-   * Carga todos los proyectos desde la API o LocalStorage
+   * Carga todos los proyectos desde la API.
+   * La API es la fuente de verdad para proyectos y tareas.
    */
   const cargarProyectos = useCallback(async () => {
     try {
@@ -47,11 +48,7 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
       setProyectos(respuesta.datos || [])
     } catch (error) {
       console.error('Error al cargar proyectos:', error)
-      const proyectosGuardados = localStorage.getItem('proyectos')
-
-      if (proyectosGuardados) {
-        setProyectos(JSON.parse(proyectosGuardados))
-      } else if (error instanceof Error) {
+      if (error instanceof Error) {
         throw new Error('No se pudo conectar al servidor. Recarga la página e inténtalo de nuevo.')
       }
     }
@@ -66,7 +63,6 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
       const proyectosActualizados = [...proyectos, respuesta.datos]
 
       setProyectos(proyectosActualizados)
-      localStorage.setItem('proyectos', JSON.stringify(proyectosActualizados))
     } catch (error) {
       console.error('Error al crear proyecto:', error)
       if (error instanceof Error) {
@@ -86,9 +82,6 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
       const proyectosActualizados = proyectos.map((p) => (p.id === id ? respuesta.datos : p))
 
       setProyectos(proyectosActualizados)
-      localStorage.setItem('proyectos', JSON.stringify(
-        proyectosActualizados
-      ))
     } catch (error) {
       console.error('Error al actualizar proyecto:', error)
       throw error
@@ -104,9 +97,6 @@ export function ProyectoProvider({ children }: ProyectoProviderProps) {
       const proyectosActualizados = proyectos.filter((p) => p.id !== id)
 
       setProyectos(proyectosActualizados)
-      localStorage.setItem('proyectos', JSON.stringify(
-        proyectosActualizados
-      ))
     } catch (error) {
       console.error('Error al eliminar proyecto:', error)
       throw error

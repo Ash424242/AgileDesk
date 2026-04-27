@@ -22,6 +22,12 @@ router.put('/:id', ControladorProyectos.actualizar)
 // Eliminar un proyecto
 router.delete('/:id', ControladorProyectos.eliminar)
 
+// Obtener columnas de un proyecto
+router.get('/:proyectoId/columnas', ControladorProyectos.obtenerColumnas)
+
+// Obtener tareas de una columna
+router.get('/:proyectoId/columnas/:columnaId/tareas', ControladorProyectos.obtenerTareas)
+
 // Crear una tarea en una columna
 router.post('/:proyectoId/columnas/:columnaId/tareas', ControladorProyectos.crearTarea)
 

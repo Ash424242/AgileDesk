@@ -1,204 +1,91 @@
-# README
-
 # AgileDesk
 
-Aplicación web integral de gestión de proyectos tipo Kanban construida con React, TypeScript y Express. Frontend y backend integrados en una única aplicación.
+Aplicación fullstack de gestión de proyectos tipo Kanban desarrollada con React, TypeScript, Tailwind y Node.js/Express.
 
-## 🎯 Características
+## Estado actual del proyecto
 
-- **Tablero Kanban Visual**: Organiza tareas en columnas de "Por Hacer", "En Progreso" y "Completado"
-- **Gestión de Proyectos**: Crea, edita y elimina proyectos
-- **Gestión de Tareas**: Crea tareas con prioridades, descripciones y etiquetas
-- **API REST Tipada**: Backend con Express y TypeScript
-- **Interfaz Intuitiva**: Diseño limpio y responsivo con Tailwind CSS
-- **React Router**: Navegación fluida entre páginas
-- **Context API**: Gestión centralizada de estado global
-- **Hooks Personalizados**: `useFetch` y `useFormulario` para lógica reutilizable
-- **Aplicación Unificada**: Frontend y backend en la misma URL, sin configuración adicional
+- Frontend y API conviven en el mismo repositorio.
+- La API es la fuente de verdad para proyectos y tareas.
+- El cliente HTTP del frontend está tipado y usa rutas relativas (`/api/...`).
+- La documentación de `docs/` está actualizada al estado real del código.
 
-## 🚀 Inicio Rápido
+## Tecnologías
 
-### Desarrollo
+- React 18 + TypeScript + Vite
+- Tailwind CSS
+- React Router
+- Node.js + Express
 
-Ejecutar frontend y backend simultáneamente:
+## Ejecución local
 
 ```bash
+npm install
 npm run dev
 ```
 
-- Acceder en: http://localhost:5173
+Servicios en desarrollo:
+- Frontend: `http://localhost:5173`
+- Backend/API: `http://localhost:3000`
 
-El servidor backend se ejecuta automáticamente en el puerto 3000 y sirve los archivos del frontend.
-
-### Producción
+## Build y ejecución de producción local
 
 ```bash
-# Compilar frontend y backend
 npm run build
-
-# Ejecutar servidor de producción
 npm run server
 ```
 
-El servidor servirá la aplicación completa en http://localhost:3000
+Aplicación en: `http://localhost:3000`
 
-## 📂 Estructura del Proyecto
+## Estructura de carpetas
 
-```
+```text
 AgileDesk/
-├── src/                          # Frontend
-│   ├── components/               # Componentes reutilizables
-│   ├── pages/                    # Páginas de la aplicación
-│   ├── context/                  # Context API
-│   ├── hooks/                    # Hooks personalizados
-│   ├── api/                      # Cliente HTTP tipado
-│   ├── types/                    # Tipos TypeScript
-│   ├── utils/                    # Funciones utilitarias
-│   ├── App.tsx                   # Componente raíz
-│   └── main.tsx                  # Punto de entrada
-│
-├── server/                       # Backend
+├── api/                        # API serverless para despliegue en Vercel
+│   ├── _lib/                   # Lógica compartida de la API en Vercel
+│   └── proyectos/              # Handler de endpoints de proyectos y tareas
+├── docs/                       # Documentación del proyecto
+├── public/                     # Archivos estáticos públicos
+├── server/                     # Backend Express para entorno local
 │   └── src/
-│       ├── index.ts              # Servidor Express
-│       ├── routes/               # Rutas API
-│       ├── controllers/          # Controladores
-│       ├── services/             # Lógica de negocio
-│       └── config/               # Configuración
-│
-├── docs/                         # Documentación
-│   ├── agile.md                  # Metodologías Agile
-│   ├── idea.md                   # Descripción del proyecto
-│   ├── project-management.md     # Gestión del proyecto
-│   ├── design.md                 # Arquitectura
-│   ├── components.md             # Componentes
-│   ├── hooks.md                  # Hooks personalizados
-│   ├── context.md                # Context API
-│   ├── routing.md                # Sistema de rutas
-│   ├── forms.md                  # Formularios
-│   ├── api.md                    # API REST
-│   ├── api-client.md             # Cliente HTTP
-│   └── testing.md                # Testing
-│
-└── public/                       # Archivos estáticos
+│       ├── config/             # Configuración del servidor
+│       ├── controllers/        # Controladores HTTP
+│       ├── routes/             # Definición de rutas REST
+│       ├── services/           # Lógica de negocio
+│       └── types/              # Tipos del backend
+├── src/                        # Frontend React + TypeScript
+│   ├── api/                    # Cliente HTTP tipado
+│   ├── components/             # Componentes reutilizables
+│   ├── context/                # Context API y estado global
+│   ├── hooks/                  # Hooks personalizados
+│   ├── pages/                  # Páginas de la aplicación
+│   ├── types/                  # Tipos compartidos del frontend
+│   └── utils/                  # Utilidades del frontend
+├── README.md
+├── package.json
+└── vercel.json                 # Configuración de despliegue en Vercel
 ```
 
-## 🛠️ Tecnologías
+## Documentación
 
-### Frontend
-- **React 18**: Librería UI
-- **TypeScript**: Type safety
-- **Vite**: Build tool rápido
-- **Tailwind CSS**: Estilos utility-first
-- **React Router v6**: Enrutamiento
-- **Context API**: Gestión de estado global
+- `docs/agile.md`: resumen de Agile, Scrum y Kanban aplicado al proyecto.
+- `docs/idea.md`: problema, público objetivo y alcance funcional de AgileDesk.
+- `docs/project-management.md`: organización del trabajo y uso del tablero Kanban.
+- `docs/design.md`: decisiones de arquitectura y flujo de datos frontend-API-backend.
+- `docs/components.md`: catálogo de componentes reutilizables y su propósito.
+- `docs/hooks.md`: uso de hooks de React y hooks personalizados del proyecto.
+- `docs/context.md`: implementación del estado global con Context API.
+- `docs/routing.md`: rutas implementadas y navegación actual de la aplicación.
+- `docs/forms.md`: formularios controlados, validaciones y feedback al usuario.
+- `docs/api.md`: endpoints REST disponibles y contratos de respuesta.
+- `docs/api-client.md`: capa de red tipada en frontend y operaciones del cliente HTTP.
+- `docs/testing.md`: estado actual de pruebas y checklist de validaciones manuales.
+- `docs/deployment.md`: estrategia de despliegue en Vercel y notas de entorno.
+- `docs/retrospective.md`: reflexión final, aprendizajes y próximos pasos técnicos.
 
-### Backend
-- **Node.js**: Runtime JavaScript
-- **Express**: Framework web
-- **TypeScript**: Type safety
-- **CORS**: Cross-origin requests
+## Trello (gestión del proyecto)
 
-## 📖 Documentación
+El proyecto se organiza con un tablero Kanban en Trello usando columnas de Backlog y Hecho para seguir el avance de funcionalidades y documentación.
 
-Consulta la carpeta `docs/` para documentación detallada:
+## Vercel (despliegue)
 
-- `docs/agile.md` - Metodologías Agile, Scrum y Kanban
-- `docs/idea.md` - Descripción y problema que resuelve
-- `docs/project-management.md` - Organización del trabajo
-- `docs/design.md` - Arquitectura de la aplicación
-- `docs/components.md` - Componentes reutilizables
-- `docs/hooks.md` - Hooks personalizados
-- `docs/context.md` - Gestión de estado global
-- `docs/routing.md` - Sistema de rutas
-- `docs/forms.md` - Manejo de formularios
-- `docs/api.md` - Endpoints REST
-- `docs/api-client.md` - Cliente HTTP tipado
-- `docs/testing.md` - Estrategia de testing
-
-## 🎮 Cómo Usar
-
-1. **Crear Proyecto**: Haz clic en "Crear Proyecto" y completa el formulario
-2. **Ver Tablero**: Selecciona un proyecto para ver su tablero Kanban
-3. **Agregar Tarea**: Haz clic en "+ Agregar Tarea" en cualquier columna
-4. **Editar Tarea**: Haz clic en una tarea para editar sus detalles
-5. **Mover Tarea**: Arrastra tareas entre columnas (futuro: drag & drop)
-6. **Eliminar**: Usa el botón de eliminar en tareas o proyectos
-
-## 🧪 Testing
-
-```bash
-# Ejecutar tests
-npm run test
-
-# Con cobertura
-npm run test -- --coverage
-
-# Watch mode
-npm run test -- --watch
-```
-
-## 🔍 Linting
-
-```bash
-# Verificar código
-npm run lint
-
-# Verificar tipos
-npx tsc --noEmit
-```
-
-## 🚢 Despliegue
-
-La aplicación está completamente integrada: frontend y backend se sirven desde el mismo servidor.
-
-### Despliegue en Vercel
-
-1. **Conectar repositorio GitHub**
-   - Ve a [vercel.com](https://vercel.com)
-   - Conecta tu repositorio de AgileDesk
-   - Vercel detectará automáticamente que es un proyecto Node.js
-
-2. **Configuración automática**
-   - Vercel ejecutará `npm run build` para compilar
-   - Ejecutará `npm start` para iniciar el servidor con los archivos estáticos
-
-3. **Sin variables de entorno necesarias**
-   - La aplicación funciona "out of the box"
-   - No necesita configurar `VITE_API_URL`
-
-4. **Acceder a la aplicación**
-   - Tu aplicación estará disponible en `https://tu-proyecto.vercel.app`
-   - Todos los endpoints estarán disponibles (frontend + API)
-
-### Despliegue local
-
-```bash
-# Compilar
-npm run build
-
-# Ejecutar
-npm run server
-
-# Acceder en http://localhost:3000
-```
-
-Ver [docs/deployment.md](docs/deployment.md) para configuraciones avanzadas.
-git push origin main
-# Railway/Render redeploya automáticamente
-```
-
-## ⚙️ Configuración de Variables de Entorno
-
-### Desarrollo Local
-Crea `.env.local` (no se versionará):
-```
-VITE_API_URL=http://localhost:3000
-```
-
-### Producción (Vercel)
-En el dashboard de Vercel, agrega:
-```
-VITE_API_URL=https://tu-backend-desplegado.com
-```
-
-Ver `.env.example` para más variables disponibles.
+La aplicación se despliega en Vercel con frontend estático y API serverless definida en `vercel.json`, manteniendo el consumo por rutas relativas desde el cliente.

@@ -177,6 +177,76 @@ export class ControladorProyectos {
   }
 
   /**
+   * GET /api/proyectos/:proyectoId/columnas
+   * Obtiene las columnas de un proyecto
+   */
+  static obtenerColumnas(req: Request, res: Response): void {
+    try {
+      const { proyectoId } = req.params
+      const columnas = servicioProyectos.obtenerColumnas(proyectoId)
+
+      if (!columnas) {
+        res.status(404).json({
+          exito: false,
+          datos: null,
+          mensaje: 'Proyecto no encontrado',
+          codigo: 404,
+        })
+        return
+      }
+
+      res.json({
+        exito: true,
+        datos: columnas,
+        mensaje: 'Columnas obtenidas correctamente',
+        codigo: 200,
+      })
+    } catch (error) {
+      res.status(500).json({
+        exito: false,
+        datos: null,
+        mensaje: error instanceof Error ? error.message : 'Error al obtener columnas',
+        codigo: 500,
+      })
+    }
+  }
+
+  /**
+   * GET /api/proyectos/:proyectoId/columnas/:columnaId/tareas
+   * Obtiene las tareas de una columna
+   */
+  static obtenerTareas(req: Request, res: Response): void {
+    try {
+      const { proyectoId, columnaId } = req.params
+      const tareas = servicioProyectos.obtenerTareas(proyectoId, columnaId)
+
+      if (!tareas) {
+        res.status(404).json({
+          exito: false,
+          datos: null,
+          mensaje: 'Proyecto o columna no encontrada',
+          codigo: 404,
+        })
+        return
+      }
+
+      res.json({
+        exito: true,
+        datos: tareas,
+        mensaje: 'Tareas obtenidas correctamente',
+        codigo: 200,
+      })
+    } catch (error) {
+      res.status(500).json({
+        exito: false,
+        datos: null,
+        mensaje: error instanceof Error ? error.message : 'Error al obtener tareas',
+        codigo: 500,
+      })
+    }
+  }
+
+  /**
    * POST /api/proyectos/:proyectoId/columnas/:columnaId/tareas
    * Crea una nueva tarea
    */

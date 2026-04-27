@@ -69,6 +69,23 @@ export class ServicioProyectos {
   /**
    * Agrega una tarea a una columna
    */
+  obtenerColumnas(proyectoId: string): Columna[] | null {
+    const proyecto = this.proyectos.get(proyectoId)
+    if (!proyecto) return null
+    return proyecto.columnas
+  }
+
+  obtenerTareas(proyectoId: string, columnaId: string): Tarea[] | null {
+    const proyecto = this.proyectos.get(proyectoId)
+    if (!proyecto) return null
+    const columna = proyecto.columnas.find((c: Columna) => c.id === columnaId)
+    if (!columna) return null
+    return columna.tareas
+  }
+
+  /**
+   * Agrega una tarea a una columna
+   */
   agregarTarea(columnaId: string, tarea: Omit<Tarea, 'id' | 'fechaCreacion'>): Tarea | null {
     for (const proyecto of this.proyectos.values()) {
       const columna = proyecto.columnas.find((c: Columna) => c.id === columnaId)

@@ -117,6 +117,30 @@ export default function handler(req: Solicitud, res: Respuesta) {
     }
 
     if (
+      method === 'GET' &&
+      ruta.length === 2 &&
+      ruta[1] === 'columnas'
+    ) {
+      const proyectoId = ruta[0]
+      const columnas = servicioProyectos.obtenerColumnas(proyectoId)
+      if (!columnas) return responder(res, 404, null, 'Proyecto no encontrado')
+      return responder(res, 200, columnas, 'Columnas obtenidas correctamente')
+    }
+
+    if (
+      method === 'GET' &&
+      ruta.length === 4 &&
+      ruta[1] === 'columnas' &&
+      ruta[3] === 'tareas'
+    ) {
+      const proyectoId = ruta[0]
+      const columnaId = ruta[2]
+      const tareas = servicioProyectos.obtenerTareas(proyectoId, columnaId)
+      if (!tareas) return responder(res, 404, null, 'Proyecto o columna no encontrada')
+      return responder(res, 200, tareas, 'Tareas obtenidas correctamente')
+    }
+
+    if (
       method === 'POST' &&
       ruta.length === 4 &&
       ruta[1] === 'columnas' &&

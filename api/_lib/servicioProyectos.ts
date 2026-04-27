@@ -98,6 +98,22 @@ class ServicioProyectos {
     return null
   }
 
+  obtenerColumnas(proyectoId: string): Columna[] | null {
+    const proyecto = this.proyectos.get(proyectoId)
+    if (!proyecto) return null
+    return proyecto.columnas
+  }
+
+  obtenerTareas(proyectoId: string, columnaId: string): Tarea[] | null {
+    const proyecto = this.proyectos.get(proyectoId)
+    if (!proyecto) return null
+
+    const columna = proyecto.columnas.find((c) => c.id === columnaId)
+    if (!columna) return null
+
+    return columna.tareas
+  }
+
   actualizarTarea(columnaId: string, tareaId: string, datosActualizacion: Partial<Tarea>): Tarea | null {
     for (const proyecto of this.proyectos.values()) {
       const columna = proyecto.columnas.find((c) => c.id === columnaId)
