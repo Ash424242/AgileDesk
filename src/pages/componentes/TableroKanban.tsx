@@ -143,7 +143,7 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
             </div>
 
             <div
-              className={`space-y-3 min-h-96 rounded-lg p-1 transition-colors ${
+              className={`space-y-3 rounded-lg p-1 transition-colors ${
                 arrastrando ? 'bg-primary-50/30 dark:bg-primary-950/20' : ''
               }`}
               onDragOver={(e) => e.preventDefault()}
