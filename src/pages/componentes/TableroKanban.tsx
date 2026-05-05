@@ -1,10 +1,102 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
+import { DndContext, DragEndEvent, useDraggable, useDroppable } from '@dnd-kit/core'
+import { CSS } from '@dnd-kit/utilities'
 import { Proyecto, Tarea } from '../../types'
 import { Tarjeta, Boton, Modal, Entrada, Selector, Alerta } from '../../components'
 import { useProyecto } from '../../context/useProyecto'
 
 interface TableroKanbanProps {
   proyecto: Proyecto;
+}
+
+interface TarjetaArrastrableProps {
+  columnaId: string;
+  tarea: Tarea;
+  onClick: () => void;
+  onDelete: () => void;
+  colorPrioridad: Record<string, string>;
+  colorPrioridadOscuro: Record<string, string>;
+}
+
+function TarjetaArrastrable({
+  columnaId,
+  tarea,
+  onClick,
+  onDelete,
+  colorPrioridad,
+  colorPrioridadOscuro,
+}: TarjetaArrastrableProps) {
+  const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
+    id: tarea.id,
+    data: {
+      tareaId: tarea.id,
+      columnaOrigenId: columnaId,
+    },
+  })
+
+  const style = {
+    transform: CSS.Translate.toString(transform),
+    opacity: isDragging ? 0.6 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="cursor-grab active:cursor-grabbing"
+      {...listeners}
+      {...attributes}
+    >
+      <Tarjeta onClick={onClick}>
+        <div className="flex items-start justify-between gap-3">
+          <h4 className="font-semibold text-gray-900 dark:text-gray-50">{tarea.titulo}</h4>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation()
+              onDelete()
+            }}
+            className="text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400"
+            aria-label="Borrar tarea"
+            title="Borrar tarea"
+          >
+            ✕
+          </button>
+        </div>
+        {tarea.descripcion && (
+          <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">{tarea.descripcion}</p>
+        )}
+        <div className="flex items-center gap-2 mt-3">
+          <span
+            className={`text-xs px-2 py-1 rounded font-semibold ${
+              `${colorPrioridad[tarea.prioridad]} ${colorPrioridadOscuro[tarea.prioridad]}`
+            }`}
+          >
+            {tarea.prioridad.charAt(0).toUpperCase() +
+              tarea.prioridad.slice(1)}
+          </span>
+        </div>
+      </Tarjeta>
+    </div>
+  )
+}
+
+interface ColumnaSoltableProps {
+  columnaId: string;
+  className: string;
+  children: ReactNode;
+}
+
+function ColumnaSoltable({ columnaId, className, children }: ColumnaSoltableProps) {
+  const { setNodeRef } = useDroppable({
+    id: columnaId,
+  })
+
+  return (
+    <div ref={setNodeRef} className={className}>
+      {children}
+    </div>
+  )
 }
 
 /**
@@ -107,18 +199,18 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
     }
   }
 
-  const onDragStartTarea = (columnaOrigenId: string, tareaId: string) => {
-    setArrastrando({ tareaId, columnaOrigenId })
-  }
-
-  const onDropEnColumna = async (columnaDestinoId: string) => {
-    if (!arrastrando) return
+  const onDragEndTarea = async (event: DragEndEvent) => {
+    const { active, over } = event
     setArrastrando(null)
-    if (arrastrando.columnaOrigenId === columnaDestinoId) return
+    if (!over) return
+
+    const data = active.data.current as { tareaId: string; columnaOrigenId: string } | undefined
+    if (!data) return
+    if (data.columnaOrigenId === over.id) return
 
     setError(null)
     try {
-      await moverTarea(arrastrando.tareaId, arrastrando.columnaOrigenId, columnaDestinoId)
+      await moverTarea(data.tareaId, data.columnaOrigenId, String(over.id))
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al mover tarea')
     }
@@ -134,71 +226,52 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
         />
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {proyecto.columnas.map((columna) => (
-          <div key={columna.id} className="space-y-4">
-            <div className="bg-gray-200 rounded-lg p-4 dark:bg-gray-900 dark:border dark:border-gray-800">
-              <h3 className="font-bold text-gray-900 dark:text-gray-50">{columna.nombre}</h3>
-              <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{columna.tareas.length} tareas</p>
-            </div>
+      <DndContext
+        onDragStart={(event) => {
+          const data = event.active.data.current as { tareaId: string; columnaOrigenId: string } | undefined
+          if (!data) return
+          setArrastrando({ tareaId: data.tareaId, columnaOrigenId: data.columnaOrigenId })
+        }}
+        onDragEnd={onDragEndTarea}
+      >
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {proyecto.columnas.map((columna) => (
+            <div key={columna.id} className="space-y-4">
+              <div className="bg-gray-200 rounded-lg p-4 dark:bg-gray-900 dark:border dark:border-gray-800">
+                <h3 className="font-bold text-gray-900 dark:text-gray-50">{columna.nombre}</h3>
+                <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{columna.tareas.length} tareas</p>
+              </div>
 
-            <div
-              className={`space-y-3 rounded-lg p-1 transition-colors ${
-                arrastrando ? 'bg-primary-50/30 dark:bg-primary-950/20' : ''
-              }`}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={() => onDropEnColumna(columna.id)}
-            >
-              {columna.tareas.map((tarea) => (
-                <Tarjeta
-                  key={tarea.id}
-                  className="cursor-grab active:cursor-grabbing"
-                  onClick={() => abrirEdicion(columna.id, tarea)}
-                  draggable
-                  onDragStart={() => onDragStartTarea(columna.id, tarea.id)}
-                >
-                  <div className="flex items-start justify-between gap-3">
-                    <h4 className="font-semibold text-gray-900 dark:text-gray-50">{tarea.titulo}</h4>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        manejarBorrarTarea(columna.id, tarea)
-                      }}
-                      className="text-gray-400 hover:text-red-600 dark:text-gray-500 dark:hover:text-red-400"
-                      aria-label="Borrar tarea"
-                      title="Borrar tarea"
-                    >
-                      ✕
-                    </button>
-                  </div>
-                  {tarea.descripcion && (
-                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-2">{tarea.descripcion}</p>
-                  )}
-                  <div className="flex items-center gap-2 mt-3">
-                    <span
-                      className={`text-xs px-2 py-1 rounded font-semibold ${
-                        `${colorPrioridad[tarea.prioridad]} ${colorPrioridadOscuro[tarea.prioridad]}`
-                      }`}
-                    >
-                      {tarea.prioridad.charAt(0).toUpperCase() +
-                        tarea.prioridad.slice(1)}
-                    </span>
-                  </div>
-                </Tarjeta>
-              ))}
-            </div>
+              <ColumnaSoltable
+                columnaId={columna.id}
+                className={`space-y-3 rounded-lg p-1 transition-colors ${
+                  arrastrando ? 'bg-primary-50/30 dark:bg-primary-950/20' : ''
+                }`}
+              >
+                {columna.tareas.map((tarea) => (
+                  <TarjetaArrastrable
+                    key={tarea.id}
+                    columnaId={columna.id}
+                    tarea={tarea}
+                    onClick={() => abrirEdicion(columna.id, tarea)}
+                    onDelete={() => manejarBorrarTarea(columna.id, tarea)}
+                    colorPrioridad={colorPrioridad}
+                    colorPrioridadOscuro={colorPrioridadOscuro}
+                  />
+                ))}
+              </ColumnaSoltable>
 
-            <Boton
-              variante="secundario"
-              className="w-full"
-              onClick={() => setColumnaBandejaAbierta(columna.id)}
-            >
-              + Agregar Tarea
-            </Boton>
-          </div>
-        ))}
-      </div>
+              <Boton
+                variante="secundario"
+                className="w-full"
+                onClick={() => setColumnaBandejaAbierta(columna.id)}
+              >
+                + Agregar Tarea
+              </Boton>
+            </div>
+          ))}
+        </div>
+      </DndContext>
 
       {(columnaBandejaAbierta || tareaEditando) && (
         <Modal
