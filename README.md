@@ -89,3 +89,5 @@ El proyecto se organiza con un tablero Kanban en Trello usando columnas de Backl
 ## Vercel (despliegue)
 
 La aplicación se despliega en Vercel con frontend estático y API serverless definida en `vercel.json`, manteniendo el consumo por rutas relativas desde el cliente.
+
+URL de despliegue: [https://agiledesk-vercel.vercel.app/](https://agiledesk-vercel.vercel.app/)
