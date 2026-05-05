@@ -236,18 +236,19 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
       >
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {proyecto.columnas.map((columna) => (
-            <div key={columna.id} className="space-y-4">
+            <ColumnaSoltable
+              key={columna.id}
+              columnaId={columna.id}
+              className={`space-y-4 rounded-lg p-1 transition-colors ${
+                arrastrando ? 'bg-primary-50/30 dark:bg-primary-950/20' : ''
+              }`}
+            >
               <div className="bg-gray-200 rounded-lg p-4 dark:bg-gray-900 dark:border dark:border-gray-800">
                 <h3 className="font-bold text-gray-900 dark:text-gray-50">{columna.nombre}</h3>
                 <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{columna.tareas.length} tareas</p>
               </div>
 
-              <ColumnaSoltable
-                columnaId={columna.id}
-                className={`space-y-3 rounded-lg p-1 transition-colors ${
-                  arrastrando ? 'bg-primary-50/30 dark:bg-primary-950/20' : ''
-                }`}
-              >
+              <div className="space-y-3">
                 {columna.tareas.map((tarea) => (
                   <TarjetaArrastrable
                     key={tarea.id}
@@ -259,7 +260,7 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
                     colorPrioridadOscuro={colorPrioridadOscuro}
                   />
                 ))}
-              </ColumnaSoltable>
+              </div>
 
               <Boton
                 variante="secundario"
@@ -268,7 +269,7 @@ export function TableroKanban({ proyecto }: TableroKanbanProps) {
               >
                 + Agregar Tarea
               </Boton>
-            </div>
+            </ColumnaSoltable>
           ))}
         </div>
       </DndContext>
